@@ -28,9 +28,9 @@ plugin.tt_news.mbl_newsevent {
 	dateSelMenuWithCatSelector = 0
 	dateselHeader_stdWrap.wrap = |
 	adjustTime = 0
-	#adjustDate is DEPRECATED
 	adjustDate = 0
 	automaticAdjustTime = 0
+	automaticAdjustDate = 0
 	
 	displayEventUntilEnd = 0
 	
