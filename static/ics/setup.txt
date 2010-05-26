@@ -1,0 +1,17 @@
+
+icsevents = PAGE 
+icsevents {
+	typeNum = 101
+	10 >
+	10 < plugin.tt_news 
+	10.pid_list >
+	10.pid_list = {$plugin.tt_news.pid_list}
+	10.singlePid = {$plugin.tt_news.singlePid}
+	10.defaultCode = ICS
+	config {
+		disableAllHeaderCode = 1 
+		#additionalHeaders = Content-type:text/calendar
+		no_cache = 1
+		xhtml_cleaning = 0  
+	} 
+} 

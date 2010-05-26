@@ -1,0 +1,89 @@
+plugin.tt_news.mbl_newsevent {
+	templateFile = {$plugin.tt_news.mbl_newsevent.templateFile}
+	
+	date_stdWrap.strftime = {$plugin.tt_news.mbl_newsevent.date_stdWrap.strftime}
+	time_stdWrap.strftime = {$plugin.tt_news.mbl_newsevent.time_stdWrap.strftime}
+	where_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.where_stdWrap.wrap}
+	where_stdWrap {
+		br = 1
+	}
+	organizer_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.organizer_stdWrap.wrap}
+	
+	enablePrice = {$plugin.tt_news.mbl_newsevent.enablePrice}
+	priceDecimals = 2
+	price_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.price_stdWrap.wrap}
+	zeroPrice_stdWrap = {$plugin.tt_news.mbl_newsevent.zeroPrice_stdWrap.wrap}
+	pricenote_stdWrap {
+		wrap = {$plugin.tt_news.mbl_newsevent.pricenote_stdWrap.wrap}
+		required = 1
+	}
+	
+	showOrganizerEmail = {$plugin.tt_news.mbl_newsevent.showOrganizerEmail}
+	
+	#Can be either: month, quarter or year
+	dateSelMode = month
+	dateSelMenuNoEmpty = 0
+	dateSelTypoLink.parameter = {$plugin.tt_news.mbl_newsevent.dateSelTypoLink.parameter}
+	disableCategoriesInDateSelLinks = 0
+	dateSelMenuWithCatSelector = 0
+	dateselHeader_stdWrap.wrap = |
+	adjustTime = 0
+	#adjustDate is DEPRECATED
+	adjustDate = 0
+	automaticAdjustTime = 0
+	
+	displayEventUntilEnd = 0
+	
+	dateSelTitleCObject = COA
+	dateSelTitleCObject {
+		10 = TEXT
+		10 {
+			field = event_start
+			strftime = %B %Y
+			wrap = <strong>|</strong>
+			if {
+				value.field = event_start
+				equals.data = GPvar:tx_ttnews|event_pS
+			}
+		 }
+		20 = TEXT
+		20 {
+			field = event_start
+			strftime = %B %Y
+			if {
+				value.field = event_start
+				equals.data = GPvar:tx_ttnews|event_pS
+				negate = 1
+			}
+		}
+	}	
+	
+	latestShowsNewEvents = 0
+		
+	#Settings for ICS feed
+	ics {
+		templateFile = EXT:mbl_newsevent/res/ics_template.tmpl
+		from = {$plugin.tt_news.mbl_newsevent.ics.from}
+		to = {$plugin.tt_news.mbl_newsevent.ics.to}
+		fileName = {$plugin.tt_news.mbl_newsevent.ics.fileName}
+		icsName = News Events
+	}
+	
+	enableRegistration = 0
+	registrationLink_typolink.parameter.field = tx_mblnewsevent_regurl
+	registrationLink_typolink.title.data = LLL:EXT:mbl_newsevent/locallang.xml:registerLinkLabel
+#	registrationLink_typolink {
+#		parameter.field >
+#		#parameter must be the PID or address you want to link to
+#		parameter = 8
+#		ATagParams = rel="lightbox"
+#		additionalParams.field = uid
+#		additionalParams.wrap = &powermail[tt_news]=|
+#	}
+	replaceWithClosed = 1
+	registerAvailableUntilEnd = 0
+	registrationClosed_stdWrap {
+		wrap = |
+		data = LLL:EXT:mbl_newsevent/locallang.xml:registerClosed
+	}
+}
