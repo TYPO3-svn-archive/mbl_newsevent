@@ -52,24 +52,24 @@
 			<label index="tt_news.tx_mblnewsevent_totime">Slut tid</label>
 			<label index="tt_news.tx_mblnewsevent_where">Lokation (By, Land)</label>
 		</languageKey>
-        <languageKey index="de" type="array">
+		<languageKey index="de" type="array">
             <label index="tt_news.tx_mblnewsevent_isevent">Ist eine Veranstaltung</label>
-            <label index="tt_news.tx_mblnewsevent_from">Anfangsdatum</label>
-            <label index="tt_news.tx_mblnewsevent_fromtime">Anfangszeit</label>
+            <label index="tt_news.tx_mblnewsevent_from">Startdatum</label>
+            <label index="tt_news.tx_mblnewsevent_fromtime">Startzeit</label>
             <label index="tt_news.tx_mblnewsevent_to">Enddatum</label>
             <label index="tt_news.tx_mblnewsevent_totime">Endzeit</label>
-            <label index="tt_news.tx_mblnewsevent_where">Ort (Stadt, Land)</label>
-            <label index="tt_news.tx_mblnewsevent_organizer">Veranstalter</label>
-            <label index="tt_news.tx_mblnewsevent_orderby_from">Veranstaltungsanfang</label>
-            <label index="tt_news.tx_mblnewsevent_orderby_to">Veranstaltungsende</label>
-            <label index="eventEditSection">Veranstaltungsinformationen</label>
+            <label index="tt_news.tx_mblnewsevent_where">Veranstaltungsort</label>
+            <label index="tt_news.tx_mblnewsevent_organizer">Organisator</label>
+            <label index="tt_news.tx_mblnewsevent_orderby_from">Veranstaltungs-Begin</label>
+            <label index="tt_news.tx_mblnewsevent_orderby_to">Veranstaltungs-Ende</label>
+            <label index="eventEditSection">Veranstaltungs-Informationen</label>
             <label index="accessSection">Zugriff</label>
-            <label index="tt_news.tx_mblnewsevent_regfrom">Registrierung Anfangsdatum</label>
-            <label index="tt_news.tx_mblnewsevent_regfromtime">Registrierung Anfangszeit</label>
-            <label index="tt_news.tx_mblnewsevent_regto">Registrierung Enddatum</label>
-            <label index="tt_news.tx_mblnewsevent_regtotime">Registrierung Endzeit</label>
-            <label index="tt_news.tx_mblnewsevent_hasregistration">Veranstaltungsregistrierung aktivieren</label>
-            <label index="tt_news.tx_mblnewsevent_regurl">Registrierungs-URL</label>
+            <label index="tt_news.tx_mblnewsevent_regfrom">Startdatum Registration</label>
+            <label index="tt_news.tx_mblnewsevent_regfromtime">Startzeit Registration</label>
+            <label index="tt_news.tx_mblnewsevent_regto">Enddatum Registration</label>
+            <label index="tt_news.tx_mblnewsevent_regtotime">Endzeit Registration</label>
+            <label index="tt_news.tx_mblnewsevent_hasregistration">Registration zulassen</label>
+            <label index="tt_news.tx_mblnewsevent_regurl">URL für Registration</label>
             <label index="tt_news.tx_mblnewsevent_price">Preis</label>
             <label index="tt_news.tx_mblnewsevent_pricenote">Preisinfo (z.B. "Mitglieder 50% Rabatt")</label>
         </languageKey>
