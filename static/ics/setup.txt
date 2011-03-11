@@ -1,9 +1,18 @@
+plugin.tt_news.mbl_newsevent {
+	#Settings for ICS feed
+	ics {
+		templateFile = EXT:mbl_newsevent/res/ics_template.tmpl
+		from = {$plugin.tt_news.mbl_newsevent.ics.from}
+		to = {$plugin.tt_news.mbl_newsevent.ics.to}
+		fileName = {$plugin.tt_news.mbl_newsevent.ics.fileName}
+		icsName = {$plugin.tt_news.mbl_newsevent.ics.icsName}
+	}
+}
 
 icsevents = PAGE 
 icsevents {
-	typeNum = 101
-	10 >
-	10 < plugin.tt_news 
+	typeNum = {$plugin.tt_news.mbl_newsevent.ics.pageType}
+	10 < plugin.tt_news
 	10.pid_list >
 	10.pid_list = {$plugin.tt_news.pid_list}
 	10.singlePid = {$plugin.tt_news.singlePid}

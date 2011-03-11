@@ -197,9 +197,9 @@ $TCA['tt_news']['palettes']['tx_mblnewsevent_regto_palette'] = array('showitem' 
 $TCA['tt_news']['palettes']['tx_mblnewsevent_price_palette'] = array('showitem' => 'tx_mblnewsevent_pricenote','canNotCollapse' => 1);
 t3lib_extMgm::addToAllTCAtypes("tt_news",",--div--;LLL:EXT:mbl_newsevent/locallang_db.xml:eventEditSection,tx_mblnewsevent_isevent;;;;1-1-1, --palette--;LLL:EXT:mbl_newsevent/locallang_db.xml:tt_news.tx_mblnewsevent_fromlabel:;tx_mblnewsevent_from_palette;;,--palette--;LLL:EXT:mbl_newsevent/locallang_db.xml:tt_news.tx_mblnewsevent_tolabel:;tx_mblnewsevent_to_palette;;, tx_mblnewsevent_hasregistration;;;;2-2-2, --palette--;LLL:EXT:mbl_newsevent/locallang_db.xml:tt_news.tx_mblnewsevent_regfromlabel:;tx_mblnewsevent_regfrom_palette;;,--palette--;LLL:EXT:mbl_newsevent/locallang_db.xml:tt_news.tx_mblnewsevent_regtolabel:;tx_mblnewsevent_regto_palette;;, tx_mblnewsevent_regurl, tx_mblnewsevent_where;;;;3-3-3, tx_mblnewsevent_organizer;;;;4-4-4,tx_mblnewsevent_price;;;;5-5-5,--palette--;LLL:EXT:mbl_newsevent/locallang_db.xml:tt_news.tx_mblnewsevent_pricenote:;tx_mblnewsevent_price_palette;;,;;;;6-6-6,--div--;LLL:EXT:mbl_newsevent/locallang_db.xml:accessSection");
 
-
+t3lib_extMgm::addStaticFile($_EXTKEY,'static/standard/','News Event');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/ics/','News Event iCalendar (.ics) feed (type=101)');
-//t3lib_extMgm::addStaticFile($_EXTKEY,'static/standard/','News Events');
+
 
 t3lib_div::loadTCA('tt_content');
 
