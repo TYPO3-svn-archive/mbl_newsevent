@@ -396,7 +396,9 @@ class tx_mblnewsevent extends tslib_pibase {
 			}
 		}
 
-		
+		if($this->conf['hideEvents']) {
+			$selectConf['where'] .= ' AND tx_mblnewsevent_isevent = 0 ';
+		}
 				
 		return $selectConf;
 	}

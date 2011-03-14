@@ -1,6 +1,8 @@
 plugin.tt_news.mbl_newsevent {
 	templateFile = {$plugin.tt_news.mbl_newsevent.templateFile}
 
+	hideEvents = 0
+
 	date_stdWrap.strftime = {$plugin.tt_news.mbl_newsevent.date_stdWrap.strftime}
 	time_stdWrap.strftime = {$plugin.tt_news.mbl_newsevent.time_stdWrap.strftime}
 	where_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.where_stdWrap.wrap}
