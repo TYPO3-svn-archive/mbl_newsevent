@@ -19,7 +19,7 @@ icsevents {
 	10.defaultCode = ICS
 	config {
 		disableAllHeaderCode = 1 
-		#additionalHeaders = Content-type:text/calendar
+		additionalHeaders = Content-type:text/ics | Content-Disposition: attachment; filename="{$plugin.tt_news.mbl_newsevent.ics.fileName}"
 		no_cache = 1
 		xhtml_cleaning = 0  
 	} 
