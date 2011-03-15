@@ -65,7 +65,7 @@
             <label index="quarter2">Zweites  Quartal</label>
             <label index="quarter3">Drittes  Quartal</label>
             <label index="quarter4">Viertes  Quartal</label>
-            <label index="months">Array</label>
+            <label index="months">Monate</label>
             <label index="select_date">Wählen sie ein Datum</label>
             <label index="previous">Vorheriges</label>
             <label index="next">Nächstes</label>
