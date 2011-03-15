@@ -70,6 +70,15 @@
             <label index="previous">Vorheriges</label>
             <label index="next">Nächstes</label>
             <label index="organizer">Organisator:</label>
+			<label index="dateselHeader">Datum auswählen</label>
+			<label index="dateSelItemItems">Auswahl:</label>
+			<label index="registerLinkLabel">Registrieren</label>
+			<label index="registerStartLabel">Registrierung öffnet am:</label>
+			<label index="registerEndLabel">Registrierung schießt am:</label>
+			<label index="registerClosed">Registrierung wurde geschlossen:</label>
+			<label index="price">Preis:</label>
+			<label index="priceNote">Preis-Info:</label>
+			<label index="freePrice">kostenlos</label>
         </languageKey>
         <languageKey index="no" type="array">
             <label index="from">Fra</label>
