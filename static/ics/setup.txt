@@ -4,7 +4,6 @@ plugin.tt_news.mbl_newsevent {
 		templateFile = EXT:mbl_newsevent/res/ics_template.tmpl
 		from = {$plugin.tt_news.mbl_newsevent.ics.from}
 		to = {$plugin.tt_news.mbl_newsevent.ics.to}
-		fileName = {$plugin.tt_news.mbl_newsevent.ics.fileName}
 		icsName = {$plugin.tt_news.mbl_newsevent.ics.icsName}
 	}
 }

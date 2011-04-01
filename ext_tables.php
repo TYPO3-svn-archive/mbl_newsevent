@@ -185,7 +185,6 @@ if(is_array($confArr) && $confArr['multiLineWhere']) {
 
 t3lib_div::loadTCA("tt_news");
 t3lib_extMgm::addTCAcolumns("tt_news",$tempColumns,1);
-/*t3lib_extMgm::addToAllTCAtypes("tt_news",",--div--;LLL:EXT:mbl_newsevent/locallang_db.xml:eventEditSection,tx_mblnewsevent_isevent;;;;1-1-1, tx_mblnewsevent_from, tx_mblnewsevent_fromtime, tx_mblnewsevent_to, tx_mblnewsevent_totime, tx_mblnewsevent_hasregistration;;;;2-2-2, tx_mblnewsevent_regfrom, tx_mblnewsevent_regfromtime, tx_mblnewsevent_regto, tx_mblnewsevent_regtotime, tx_mblnewsevent_regurl, tx_mblnewsevent_where;;;;3-3-3, tx_mblnewsevent_organizer;;;;4-4-4,--div--;LLL:EXT:mbl_newsevent/locallang_db.xml:accessSection");*/
 
 /*
 Thanks to Peter Klein!
@@ -199,6 +198,7 @@ t3lib_extMgm::addToAllTCAtypes("tt_news",",--div--;LLL:EXT:mbl_newsevent/localla
 
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/standard/','News Event');
 t3lib_extMgm::addStaticFile($_EXTKEY,'static/ics/','News Event iCalendar (.ics) feed (type=101)');
+t3lib_extMgm::addStaticFile($_EXTKEY,'static/singleics/','Single News Event iCalendar (.ics) (type=102)');
 
 
 t3lib_div::loadTCA('tt_content');

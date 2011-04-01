@@ -433,6 +433,9 @@ class tx_mblnewsevent extends tslib_pibase {
 			case 'ICS':
 				$content = $this->icsHandler($tt_news);
 				break;
+			case 'SINGLE_ICS':
+				$content = $this->icsHandler($tt_news);
+				break;
 			case 'EVENT_CURRENT':
 				$tt_news->theCode = 'LIST';
 				$content = $tt_news->displayList();
@@ -461,8 +464,16 @@ class tx_mblnewsevent extends tslib_pibase {
 	function icsHandler($tt_news) {
 		$this->cObj = &$tt_news->cObj;
 		
+		if($tt_news->conf['defaultCode'] == 'SINGLE_ICS') {
+			$confPrefix = 'singleics.';
+			$getSinlgeEvent = TRUE;
+		} else {
+			$confPrefix = 'ics.';
+			$getSinlgeEvent = FALSE;
+		}
+
 		//Get the template file
-		$mainTemplate = $this->cObj->fileResource($this->conf['ics.']['templateFile']);
+		$mainTemplate = $this->cObj->fileResource($this->conf[$confPrefix]['templateFile']);
 		
 		$headerTemplate = $this->cObj->getSubpart(
 		  $mainTemplate, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
@@ -474,9 +485,14 @@ class tx_mblnewsevent extends tslib_pibase {
 		  '###ELEMENT###' //Marker string, eg. "###CONTENT_PART###"
 		);
 		
+		$organizerTemplate = $this->cObj->getSubpart(
+		  $elementTemplate, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+		  '###ORGANIZER###' //Marker string, eg. "###CONTENT_PART###"
+		);
+		
 		//Set header
 		$markerArray = array();
-		$markerArray['###CALENDAR_NAME###'] = $this->conf['ics.']['icsName'];
+		$markerArray['###CALENDAR_NAME###'] = $this->conf[$confPrefix]['icsName'];
 		
 		$headerTemplate = $this->cObj->substituteMarkerArrayCached(
 		  $headerTemplate, //The content stream, typically HTML template content.
@@ -487,15 +503,19 @@ class tx_mblnewsevent extends tslib_pibase {
 		  '###HEADER###', //The marker string, typically on the form "###[the marker string]###"
 		  $headerTemplate //The content to insert instead of the subpart found. If a string, then just plain substitution happens (includes removing the HTML comments of the subpart if found). If $subpartContent happens to be an array, it's [0] and [1] elements are wrapped around the EXISTING content of the subpart (fetched by getSubpart()) thereby not removing the original content.
 		);
-		
-		
-		//Get all events
+
 		$selectConf = $tt_news->getSelectConf('', 1);
-		
-		$selectConf['where'] .= ' AND tt_news.tx_mblnewsevent_isevent = 1';
-		$selectConf['where'] .= ' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) > ' . strtotime($this->conf['ics.']['from']) . ' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) < ' . strtotime($this->conf['ics.']['to']) . ' ';
-		
-		//echo $tt_news->getQuery('tt_news', $selectConf);
+
+		//Get single event
+		if($getSinlgeEvent) {
+			$selectConf['where'] .= ' AND tt_news.tx_mblnewsevent_isevent = 1 AND tt_news.uid = ' . (int) $tt_news->piVars['tt_news'] . ' ';
+		//Get all events
+		} else {
+			$selectConf['where'] .= ' AND tt_news.tx_mblnewsevent_isevent = 1';
+			$selectConf['where'] .= ' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) > ' . strtotime($this->conf[$confPrefix]['from']) . ' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) < ' . strtotime($this->conf[$confPrefix]['to']) . ' ';
+		}
+
+		//var_dump( $tt_news->cObj->getQuery('tt_news', $selectConf)); die();
 		$res = $tt_news->exec_getQuery('tt_news', $selectConf);
 		
 		$seq = 0;
@@ -530,13 +550,30 @@ class tx_mblnewsevent extends tslib_pibase {
 				);
 			}
 			
-			$organizerArray = $this->_getOrganizerArray($row);
-			$markerArray['###ORGANIZER_NAME###'] = $this->icsEscape($organizerArray['name']);
-			$markerArray['###ORGANIZER_EMAIL###'] = $this->icsEscape($organizerArray['email']);
-			
+			if($row['tx_mblnewsevent_organizer']) {
+				$organizerArray = $this->_getOrganizerArray($row);
+				$organizerMarkerArray = array();
+				$organizerMarkerArray['###ORGANIZER_NAME###'] = $this->icsEscape($organizerArray['name']);
+				$organizerMarkerArray['###ORGANIZER_EMAIL###'] = $this->icsEscape($organizerArray['email']);
+
+				$organizerContent = $this->cObj->substituteMarkerArray(
+				  $organizerTemplate, //The content stream, typically HTML template content.
+				  $organizerMarkerArray //Regular marker-array where the 'keys' are substituted in $content with their values
+				);
+			} else {
+				$organizerContent = '';
+			}
+
+			$tmpElementTemplate = $elementTemplate;
+
+			$tmpElementTemplate = $this->cObj->substituteSubpart(
+			  $tmpElementTemplate, //The content stream, typically HTML template content.
+			  '###ORGANIZER###', //The marker string, typically on the form "###[the marker string]###"
+			  $organizerContent //The content to insert instead of the subpart found. If a string, then just plain substitution happens (includes removing the HTML comments of the subpart if found). If $subpartContent happens to be an array, it's [0] and [1] elements are wrapped around the EXISTING content of the subpart (fetched by getSubpart()) thereby not removing the original content.
+			);
 			
 			$elements .= $this->cObj->substituteMarkerArray(
-			  $elementTemplate, //The content stream, typically HTML template content.
+			  $tmpElementTemplate, //The content stream, typically HTML template content.
 			  $markerArray //Regular marker-array where the 'keys' are substituted in $content with their values
 			);
 			
@@ -621,8 +658,8 @@ class tx_mblnewsevent extends tslib_pibase {
 	}
 	
 	function extraItemMarkerProcessor($parentMarkerArray, $row, $lConf, $tt_news) {
-		$this->cObj = new tslib_cObj();
-		$this->cObj->start($row, 'tt_news');
+		$this->cObj = $tt_news->local_cObj;
+		//$this->cObj->start($row, 'tt_news');
 		
 		//debug($row);
 		if($row['tx_mblnewsevent_isevent']) {
@@ -798,6 +835,16 @@ class tx_mblnewsevent extends tslib_pibase {
 				$markerArray['###EVENT_PRICE_LABEL###'] = '';
 				$markerArray['###EVENT_PRICE_NOTE###'] = '';
 				$markerArray['###EVENT_PRICE_NOTE_LABEL###'] = '';
+			}
+
+			//Single ICS link
+			if($this->conf['enableSingleICSLink']) {
+				$markerArray['###EVENT_SINGLE_ICS_LINK###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('downloadSingleICS')), //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+					$this->conf['singleICSLink_stdWrap.'] //TypoScript "stdWrap properties".
+				);
+			} else {
+				$markerArray['###EVENT_SINGLE_ICS_LINK###'] = '';
 			}
 			
 			$templateFile = $this->cObj->fileResource($this->conf['templateFile']);
