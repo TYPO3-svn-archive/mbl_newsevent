@@ -18,7 +18,6 @@ plugin.tt_news.mbl_newsevent {
 
 	singleics {
 		templateFile = EXT:mbl_newsevent/res/ics_template.tmpl
-		icsName = {$plugin.tt_news.mbl_newsevent.singleics.icsName}
 	}
 }
 

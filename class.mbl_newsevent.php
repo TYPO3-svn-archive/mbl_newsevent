@@ -492,7 +492,29 @@ class tx_mblnewsevent extends tslib_pibase {
 		
 		//Set header
 		$markerArray = array();
-		$markerArray['###CALENDAR_NAME###'] = $this->conf[$confPrefix]['icsName'];
+
+		//Only set the calendar name if we're NOT getting single event.
+		if($getSinlgeEvent) {
+			$headerTemplate = $this->cObj->substituteSubpart(
+				  $headerTemplate, //The content stream, typically HTML template content.
+				  '###CALNAME###', //The marker string, typically on the form "###[the marker string]###"
+				  '' //The content to insert instead of the subpart found. If a string, then just plain substitution happens (includes removing the HTML comments of the subpart if found). If $subpartContent happens to be an array, it's [0] and [1] elements are wrapped around the EXISTING content of the subpart (fetched by getSubpart()) thereby not removing the original content.
+			);
+		} else {
+			$calnameTemplate = $this->cObj->getSubpart(
+			  $headerTemplate, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+			  '###CALNAME###' //Marker string, eg. "###CONTENT_PART###"
+			);
+			$calnameArray = array('###CALENDAR_NAME###' => $this->conf[$confPrefix]['icsName']);
+			$headerTemplate = $this->cObj->substituteSubpart(
+				$headerTemplate, //The content stream, typically HTML template content.
+				'###CALNAME###', //The marker string, typically on the form "###[the marker string]###"
+				$this->cObj->substituteMarkerArray(
+					$calnameTemplate, //The content stream, typically HTML template content.
+					$calnameArray //Regular marker-array where the 'keys' are substituted in $content with their values
+				) //The content to insert instead of the subpart found. If a string, then just plain substitution happens (includes removing the HTML comments of the subpart if found). If $subpartContent happens to be an array, it's [0] and [1] elements are wrapped around the EXISTING content of the subpart (fetched by getSubpart()) thereby not removing the original content.
+			);
+		}
 		
 		$headerTemplate = $this->cObj->substituteMarkerArrayCached(
 		  $headerTemplate, //The content stream, typically HTML template content.
