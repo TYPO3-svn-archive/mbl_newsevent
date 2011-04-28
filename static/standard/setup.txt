@@ -4,13 +4,17 @@ plugin.tt_news.mbl_newsevent {
 	hideEvents = 0
 
 	date_stdWrap.strftime = {$plugin.tt_news.mbl_newsevent.date_stdWrap.strftime}
+	dateLabel_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.dateLabel_stdWrap.wrap}
+	datesLabel_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.datesLabel_stdWrap.wrap}
+	toLabel_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.toLabel_stdWrap.wrap}
 	time_stdWrap.strftime = {$plugin.tt_news.mbl_newsevent.time_stdWrap.strftime}
 	where_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.where_stdWrap.wrap}
 	where_stdWrap {
 		br = 1
 	}
+	whereLabel_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.whereLabel_stdWrap.wrap}
 	organizer_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.organizer_stdWrap.wrap}
-
+	organizerLabel_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.organizerLabel_stdWrap.wrap}
 	enablePrice = {$plugin.tt_news.mbl_newsevent.enablePrice}
 	priceDecimals = 2
 	price_stdWrap.wrap = {$plugin.tt_news.mbl_newsevent.price_stdWrap.wrap}
@@ -19,7 +23,7 @@ plugin.tt_news.mbl_newsevent {
 		wrap = {$plugin.tt_news.mbl_newsevent.pricenote_stdWrap.wrap}
 		required = 1
 	}
-
+	
 	showOrganizerEmail = {$plugin.tt_news.mbl_newsevent.showOrganizerEmail}
 
 	#Can be either: month, quarter or year

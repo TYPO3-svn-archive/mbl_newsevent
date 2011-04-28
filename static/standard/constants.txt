@@ -26,6 +26,24 @@ plugin.tt_news {
 
    # cat=plugin.tt_news/typo/907; type=wrap; label= Event Price Info Wrap: This wrap is used for the Event Price Info Text.
   mbl_newsevent.pricenote_stdWrap.wrap = (|)
+  
+
+  
+   # cat=plugin.tt_news/typo/908; type=wrap; label= Date Text Label Wrap: This wrap is used for the Date Text Label.
+  mbl_newsevent.dateLabel_stdWrap.wrap = |
+  
+  # cat=plugin.tt_news/typo/909; type=wrap; label= Dates Text Label Wrap: This wrap is used for the Dates Text Label.
+  mbl_newsevent.datesLabel_stdWrap.wrap = |
+  
+  # cat=plugin.tt_news/typo/910; type=wrap; label= To Text Label Wrap: This wrap is used for the To Text Label.
+  mbl_newsevent.toLabel_stdWrap.wrap = |
+  
+  # cat=plugin.tt_news/typo/911; type=wrap; label= Where Text Label Wrap: This wrap is used for the Where Text Label.
+  mbl_newsevent.whereLabel_stdWrap.wrap = |
+  
+  # cat=plugin.tt_news/typo/912; type=wrap; label= Organizer Text Label Wrap: This wrap is used for the Organizer Text Label.
+  mbl_newsevent.organizerLabel_stdWrap.wrap = |
+  
 }
 
 

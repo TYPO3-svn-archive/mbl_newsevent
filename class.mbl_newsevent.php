@@ -815,19 +815,37 @@ class tx_mblnewsevent extends tslib_pibase {
 				//Split into table and user
 				$organizerArray = $this->_getOrganizerArray($row);
 				
-				$markerArray['###EVENT_ORGANIZER###'] = $this->cObj->typoLink(
-				  htmlspecialchars($organizerArray['name']),
-				  array('parameter'=>$organizerArray['email'])
+				$markerArray['###EVENT_ORGANIZER###'] =  $this->cObj->stdWrap(
+						$this->cObj->typoLink(
+								htmlspecialchars($organizerArray['name']),
+								array('parameter'=>$organizerArray['email'])
+						),
+						$this->conf['organizer_stdWrap.']
 				);
 			} else {
 				$markerArray['###EVENT_ORGANIZER###'] = '';
 			}
 			
-			$markerArray['###EVENT_DATE_TEXT###'] = htmlspecialchars($this->pi_getLL('event_date'));
-			$markerArray['###EVENT_TO_TEXT###'] = htmlspecialchars($this->pi_getLL('to'));
-			$markerArray['###EVENT_DATES_TEXT###'] = htmlspecialchars($this->pi_getLL('event_dates'));
-			$markerArray['###EVENT_WHERE_TEXT###'] = htmlspecialchars($this->pi_getLL('location'));
-			$markerArray['###EVENT_ORGANIZER_TEXT###'] = htmlspecialchars($this->pi_getLL('organizer'));
+			$markerArray['###EVENT_DATE_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('event_date')),
+					$this->conf['dateLabel_stdWrap.']
+			);
+			$markerArray['###EVENT_TO_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('to')),
+					$this->conf['toLabel_stdWrap.']
+			);
+			$markerArray['###EVENT_DATES_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('event_dates')),
+					$this->conf['datesLabel_stdWrap.']
+			);
+			$markerArray['###EVENT_WHERE_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('location')),
+					$this->conf['whereLabel_stdWrap.']
+			);
+			$markerArray['###EVENT_ORGANIZER_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('organizer')),
+					$this->conf['organizerLabel_stdWrap.']
+			);
 			
 			if($this->conf['enablePrice']) {
 				//If the price is zero or less, it's free
