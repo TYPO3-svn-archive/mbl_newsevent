@@ -33,6 +33,11 @@
             <label index="priceNote">Price note:</label>
             <label index="freePrice">Free</label>
 			<label index="downloadSingleICS">Add to Calendar</label>
+			<label index="registeredCount">Registrations:</label>
+			<label index="registeredFreeCount">Places free:</label>
+			<label index="registeredMax">Max registrations:</label>
+			<label index="registeredUnlimited">Unlimited</label>
+			<label index="registerFull">The event is full.</label>
         </languageKey>
 		<languageKey index="dk" type="array">
 			<label index="dateSelItemItems">Punkter:</label>
@@ -107,6 +112,11 @@
             <label index="priceNote">Prisforklaring:</label>
             <label index="freePrice">Gratis</label>
 			<label index="downloadSingleICS">Legg til i kalenderen</label>
+			<label index="registeredCount">Påmeldinger:</label>
+			<label index="registeredFreeCount">Ledige plasser:</label>
+			<label index="registeredMax">Maks påmeldinger:</label>
+			<label index="registeredUnlimited">ubegrenset</label>
+			<label index="registerFull">Ingen ledige plasser.</label>
         </languageKey>
         <languageKey index="it" type="array">
         </languageKey>

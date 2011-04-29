@@ -15,6 +15,7 @@ CREATE TABLE tt_news (
 	tx_mblnewsevent_regtotime int(11) DEFAULT '0' NOT NULL,
 	tx_mblnewsevent_regurl text NOT NULL,
 	tx_mblnewsevent_hasregistration tinyint(3) unsigned DEFAULT '0' NOT NULL,
+	tx_mblnewsevent_registrationmax int(11) unsigned DEFAULT '0' NOT NULL,
 	tx_mblnewsevent_price decimal(7,2) DEFAULT '0.00' NOT NULL,
 	tx_mblnewsevent_pricenote tinytext NOT NULL
 );

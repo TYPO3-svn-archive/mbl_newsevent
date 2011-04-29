@@ -25,7 +25,10 @@ by hand for the extension to work.</p>
 ###REGISTER_END_TIME### - The end time for the event registration.<br />
 ###EVENT_PRICE### - The price for the event.<br />
 ###EVENT_PRICE_NOTE### - Text explaining the price (e.g. "Members 50% off").<br />
-###EVENT_SINGLE_ICS_LINK### - Link to downloading single event info as ICS file.
+###EVENT_SINGLE_ICS_LINK### - Link to downloading single event info as ICS file. <br />
+###REGISTER_REGISTEREDCOUNT### - The number of registered. <br />
+###REGISTER_FREECOUNT### - The number of free places. <br />
+###REGISTER_MAX### - The max number of registrations. <br />
 </p>
 
 <h3>Localizeable Markers (Markers for text strings, that is)</h3>
@@ -36,9 +39,13 @@ by hand for the extension to work.</p>
 ###EVENT_ORGANIZER_TEXT### - A text like "Organizer:"<br />
 ###REGISTER_START_LABEL### - A text like "Registration opens:"<br />
 ###REGISTER_END_LABEL### - A text like "Registration closes:"<br />
-###REGISTER_CLOSED_LABEL### - A text lik "Registration has closed".<br />
+###REGISTER_CLOSED_LABEL### - A text like "Registration has closed".<br />
 ###EVENT_PRICE_LABEL### - A text like "Price:".<br />
-###EVENT_PRICE_NOTE_LABEL### - A text like "Price note:"
+###EVENT_PRICE_NOTE_LABEL### - A text like "Price note:"<br />
+###REGISTER_REGISTEREDCOUNT_LABEL### - A text like "Registrations:"<br />
+###REGISTER_FREECOUNT_LABEL### - A text like "Places free:"<br />
+###REGISTER_MAX_LABEL### - A text like "Max registrations:"<br />
+###REGISTER_FULL_LABEL### - A text like "The event is full.".
 </p>
 
 <!-- ###ONE_DAY_EVENT### begin
@@ -95,7 +102,11 @@ by hand for the extension to work.</p>
 <span class="mbl_newsevent_register">
 ###REGISTER_START_LABEL### ###REGISTER_START_DATE### ###REGISTER_START_TIME###,
 ###REGISTER_END_LABEL### ###REGISTER_END_DATE### ###REGISTER_END_TIME###
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER### end -->
@@ -104,7 +115,11 @@ by hand for the extension to work.</p>
 	Event registration subpart with no start date or time-->
 <span class="mbl_newsevent_register">
 ###REGISTER_END_LABEL### ###REGISTER_END_DATE### ###REGISTER_END_TIME###
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER_NO_START### end -->
@@ -114,7 +129,11 @@ by hand for the extension to work.</p>
 <span class="mbl_newsevent_register">
 ###REGISTER_START_LABEL### ###REGISTER_START_DATE###,
 ###REGISTER_END_LABEL### ###REGISTER_END_DATE###
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER_NO_TIME### end -->
@@ -123,7 +142,11 @@ by hand for the extension to work.</p>
 	Event registration subpart with no time given and no start date-->
 <span class="mbl_newsevent_register">
 ###REGISTER_END_LABEL### ###REGISTER_END_DATE###
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER_NO_START_NO_TIME### end -->
@@ -132,7 +155,11 @@ by hand for the extension to work.</p>
 	Event registration subpart with no given end date (or end date is same as event start) -->
 <span class="mbl_newsevent_register">
 ###REGISTER_START_LABEL### ###REGISTER_START_DATE### ###REGISTER_START_TIME###
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER_NO_END### end -->
@@ -141,7 +168,11 @@ by hand for the extension to work.</p>
 	Event registration subpart with no given end date and no time (or end date is same as event start) -->
 <span class="mbl_newsevent_register">
 ###REGISTER_START_LABEL### ###REGISTER_START_DATE###
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER_NO_END_NO_TIME### end -->
@@ -149,13 +180,17 @@ by hand for the extension to work.</p>
 <!-- ###EVENT_REGISTER_NO_END_NO_START### begin  
 	Event registration subpart with no given start and end date (or end date is same as event start) -->
 <span class="mbl_newsevent_register">
+###REGISTER_REGISTEREDCOUNT_LABEL### ###REGISTER_REGISTEREDCOUNT###
+###REGISTER_FREECOUNT_LABEL### ###REGISTER_FREECOUNT###
+###REGISTER_MAX_LABEL### ###REGISTER_MAX###
 ###REGISTER_CLOSED_LABEL###
+###REGISTER_FULL_LABEL###
 ###REGISTER_LINK###
 </span>
 <!-- ###EVENT_REGISTER_NO_END_NO_START### end -->
 
 <!-- ###EVENT_REGISTER_CLOSED### begin 
-	What to show whent he event registration is closed -->
+	What to show when the event registration is closed -->
 <span class="mbl_newsevent_registerclosed">
 ###REGISTER_CLOSED_LABEL###
 </span>

@@ -28,6 +28,7 @@
             <label index="tt_news.tx_mblnewsevent_regurl">Registration URL</label>
             <label index="tt_news.tx_mblnewsevent_price">Price</label>
             <label index="tt_news.tx_mblnewsevent_pricenote">Price info text (e.g. "Members 50% off")</label>
+			<label index="tt_news.tx_mblnewsevent_registrationmax">Max registrations</label>
         </languageKey>
 		<languageKey index="dk" type="array">
 			<label index="accessSection">Adgang</label>

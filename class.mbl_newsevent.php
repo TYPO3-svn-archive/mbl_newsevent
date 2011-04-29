@@ -691,9 +691,6 @@ class tx_mblnewsevent extends tslib_pibase {
 			$this->pi_setPiVarDefaults();
 			$this->pi_loadLL();
 			
-			
-			
-			
 			$markerArray = array();
 			$markerArray['###EVENT_FROM_DATE###'] = $this->cObj->stdWrap(
 			  $row['tx_mblnewsevent_from']+$this->getAdjustDate(), //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
@@ -738,8 +735,61 @@ class tx_mblnewsevent extends tslib_pibase {
 					$regToDate = $row['tx_mblnewsevent_to'];
 					$regToTime = $row['tx_mblnewsevent_totime'];
 				}
+
+				if($this->conf['enableRegistrationsTracking']) {
+					//registrationsTable
+					if(is_array($this->conf['registrationsTable.'])) {
+						$registrationTable = $this->cObj->stdWrap(
+								$this->conf['registrationsTable'], //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+								$this->conf['registrationsTable.'] //TypoScript "stdWrap properties".
+						);
+					} else {
+						$registrationTable = $this->conf['registrationsTable'];
+					}
+
+					if($registrationTable !== '') {
+						//registrationsSelect
+						if(is_array($this->conf['registrationsSelect.'])) {
+							$registrationSelect = $this->cObj->stdWrap(
+									$this->conf['registrationsSelect'], //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+									$this->conf['registrationsSelect.'] //TypoScript "stdWrap properties".
+							);
+						} else {
+							$registrationSelect = $this->conf['registrationsSelect']?$this->conf['registrationsSelect']:'count(*)';
+						}
+
+						//registrationsWhere
+						if(is_array($this->conf['registrationsWhere.'])) {
+							$registrationWhere = $this->cObj->stdWrap(
+									$this->conf['registrationsWhere'], //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+									$this->conf['registrationsWhere.'] //TypoScript "stdWrap properties".
+							);
+						} else {
+							$registrationWhere = $this->conf['registrationsWhere'];
+						}
+
+
+						$res = $GLOBALS['TYPO3_DB']->exec_SELECTquery(
+								$registrationSelect, //List of fields to select from the table. This is what comes right after "SELECT ...". Required value.
+								$registrationTable, //Table(s) from which to select. This is what comes right after "FROM ...". Required value.
+								$registrationWhere, //Optional additional WHERE clauses put in the end of the query. NOTICE: You must escape values in this argument with $this->fullQuoteStr() yourself! DO NOT PUT IN GROUP BY, ORDER BY or LIMIT!
+								'', //Optional GROUP BY field(s), if none, supply blank string.
+								'', //Optional ORDER BY field(s), if none, supply blank string.
+								1 //Optional LIMIT value ([begin,]max), if none, supply blank string.
+						);
+						$regRow = $GLOBALS['TYPO3_DB']->sql_fetch_row($res);
+
+						$registrationsCount = (int) $regRow[0];
+						$registrationsMax = (int) $row['tx_mblnewsevent_registrationmax'];
+						$eventFull = ($registrationsMax > 0 && $registrationsCount >= $registrationsMax);
+					}
+				} else {
+					$registrationsCount = 0;
+					$registrationsMax = 0;
+					$eventFull = FALSE;
+				}
 			}
-			
+
 			//Boolean shortcuts
 			$eventOpened = ($regFromDate+$regFromTime < time());
 			$eventClosed = ($regToDate+$regToTime < time());
@@ -792,8 +842,66 @@ class tx_mblnewsevent extends tslib_pibase {
 				$markerArray['###REGISTER_TO_LABEL###'] = '';
 				$markerArray['###REGISTER_END_LABEL###'] = '';
 			}
+
+			if($this->conf['enableRegistration'] && $this->conf['enableRegistrationsTracking'] && $row['tx_mblnewsevent_hasregistration']) {
+				if($this->conf['displayCurrentRegistrations']) {
+					$markerArray['###REGISTER_REGISTEREDCOUNT###'] = $this->cObj->stdWrap(
+							(int) $registrationsCount, //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+							$this->conf['currentRegistrations_stdWrap.'] //TypoScript "stdWrap properties".
+					);
+					$markerArray['###REGISTER_REGISTEREDCOUNT_LABEL###'] = $this->cObj->stdWrap(
+							$this->pi_getLL('registeredCount'),
+							$this->conf['currentRegistrationsLabel_stdWrap.'] //TypoScript "stdWrap properties".
+					);
+				} else {
+					$markerArray['###REGISTER_REGISTEREDCOUNT###'] = '';
+					$markerArray['###REGISTER_REGISTEREDCOUNT_LABEL###'] = '';
+				}
+
+				if($this->conf['displayPlacesFree']) {
+					if($registrationsMax == 0) {
+						$tmpRegCount = $this->pi_getLL('registeredUnlimited');
+					} else {
+						$tmpRegCount = $registrationsMax-$registrationsCount;
+						$tmpRegCount = (int) ($tmpRegCount<0?0:$tmpRegCount);
+					}
+					
+					$markerArray['###REGISTER_FREECOUNT###'] = $this->cObj->stdWrap(
+							$tmpRegCount, //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+							$this->conf['placesFree_stdWrap.'] //TypoScript "stdWrap properties".
+					);
+					$markerArray['###REGISTER_FREECOUNT_LABEL###'] = $this->cObj->stdWrap(
+							$this->pi_getLL('registeredFreeCount'),
+							$this->conf['currentRegistrationsLabel_stdWrap.'] //TypoScript "stdWrap properties".
+					);
+				} else {
+					$markerArray['###REGISTER_FREECOUNT###'] = '';
+					$markerArray['###REGISTER_FREECOUNT_LABEL###'] = '';
+				}
+
+				if($this->conf['displayMaxRegistrations']) {
+					$markerArray['###REGISTER_MAX###'] = $this->cObj->stdWrap(
+							$registrationsMax > 0 ? (int)$registrationsMax : $this->pi_getLL('registeredUnlimited'), //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+							$this->conf['maxRegistrations_stdWrap.'] //TypoScript "stdWrap properties".
+					);
+					$markerArray['###REGISTER_MAX_LABEL###'] = $this->cObj->stdWrap(
+							$this->pi_getLL('registeredMax'),
+							$this->conf['currentRegistrationsLabel_stdWrap.'] //TypoScript "stdWrap properties".
+					);
+				} else {
+					$markerArray['###REGISTER_MAX###'] = '';
+					$markerArray['###REGISTER_MAX_LABEL###'] = '';
+				}
+			} else {
+				$markerArray['###REGISTER_REGISTEREDCOUNT###'] = '';
+				$markerArray['###REGISTER_FREECOUNT###'] = '';
+				$markerArray['###REGISTER_MAX###'] = '';
+				$markerArray['###REGISTER_REGISTEREDCOUNT_LABEL###'] = '';
+				$markerArray['###REGISTER_FREECOUNT_LABEL###'] = '';
+				$markerArray['###REGISTER_MAX_LABEL###'] = '';
+			}
 			
-			if(!$eventClosed && $eventOpened && $this->conf['enableRegistration'] && $row['tx_mblnewsevent_hasregistration']) {
+			if((!$eventClosed && !($eventFull && $this->conf['disableIfFull'])) && $eventOpened && $this->conf['enableRegistration'] && $row['tx_mblnewsevent_hasregistration']) {
 				$markerArray['###REGISTER_LINK###'] = $this->cObj->typoLink(
 					htmlspecialchars($this->pi_getLL('registerLinkLabel')),
 					$this->conf['registrationLink_typolink.']
@@ -808,6 +916,22 @@ class tx_mblnewsevent extends tslib_pibase {
 					$this->conf['registrationClosed_stdWrap.']
 				);
 			} else {
+				$markerArray['###REGISTER_CLOSED_LABEL###'] = '';
+			}
+
+			if($eventFull && $this->conf['enableRegistration'] && $this->conf['enableRegistrationsTracking'] && $row['tx_mblnewsevent_hasregistration']) {
+				$markerArray['###REGISTER_FULL_LABEL###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('registerFull')),
+					$this->conf['registrationFull_stdWrap.']
+				);
+			} else {
+				$markerArray['###REGISTER_FULL_LABEL###'] = '';
+			}
+
+			//Prioritize "CLOSED" or "FULL" info shown
+			if($markerArray['###REGISTER_FULL_LABEL###'] != '' && $markerArray['###REGISTER_CLOSED_LABEL###'] != '' && $this->conf['closedFullPriority'] == 'closed') {
+				$markerArray['###REGISTER_FULL_LABEL###'] = '';
+			} elseif($markerArray['###REGISTER_FULL_LABEL###'] != '' && $markerArray['###REGISTER_CLOSED_LABEL###'] != '' && $this->conf['closedFullPriority'] == 'full') {
 				$markerArray['###REGISTER_CLOSED_LABEL###'] = '';
 			}
 			

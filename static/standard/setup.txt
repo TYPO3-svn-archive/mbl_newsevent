@@ -83,4 +83,33 @@ plugin.tt_news.mbl_newsevent {
 		wrap = |
 		data = LLL:EXT:mbl_newsevent/locallang.xml:registerClosed
 	}
+
+	#For checking registration count
+	enableRegistrationsTracking = 0
+	registrationsTable =
+	#Should select ONE field only. Additional fields will be ignored.
+	registrationsSelect = COUNT(*)
+	#registrationsSelect = registeredCount
+	registrationsWhere =
+
+	disableIfFull = 1
+	registrationFull_stdWrap {
+		wrap = |
+		data = LLL:EXT:mbl_newsevent/locallang.xml:registerFull
+	}
+
+	displayMaxRegistrations = 1
+	maxRegistrations_stdWrap.wrap = |
+	maxRegistrationsLabel_stdWrap.wrap = |
+
+	displayPlacesFree = 1
+	placesFree_stdWrap.wrap = |
+	placesFreeLabel_stdWrap.wrap = |
+
+	displayCurrentRegistrations = 1
+	currentRegistrations_stdWrap.wrap = |
+	currentRegistrationsLabel_stdWrap.wrap = |
+
+	#display info that the event is "full" or that it's "closed" or "both"/empty if both should be displayed.
+	closedFullPriority = closed
 }
