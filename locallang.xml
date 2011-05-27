@@ -90,8 +90,8 @@
         <languageKey index="no" type="array">
             <label index="from">Fra</label>
             <label index="to">til</label>
-            <label index="event_dates">Hendelsesdatoer:</label>
-            <label index="event_date">Hendelsesdato:</label>
+            <label index="event_dates">Tid:</label>
+            <label index="event_date">Tid:</label>
             <label index="location">Sted:</label>
             <label index="quarter1">Første kvartal</label>
             <label index="quarter2">Andre kvartal</label>
