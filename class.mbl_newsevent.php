@@ -331,7 +331,7 @@ class tx_mblnewsevent extends tslib_pibase {
 			case 'LATEST_EVENT_FUTURE':
 			case 'EVENT_FUTURE':
 				if($this->conf['displayEventUntilEnd']) {
-					$selectConf['where'] .= ' AND (tt_news.tx_mblnewsevent_to + tt_news.tx_mblnewsevent_totime) >= ' . $execTime;
+					$selectConf['where'] .= ' AND (((tt_news.tx_mblnewsevent_to + tt_news.tx_mblnewsevent_totime) >= ' . $execTime .' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) <= ' . $execTime .') OR (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) >= ' . $execTime . ') ';
 				} else {
 					$selectConf['where'] .= ' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) >= ' . $execTime;
 				}
@@ -341,7 +341,7 @@ class tx_mblnewsevent extends tslib_pibase {
 			case 'LATEST_EVENT_PAST':
 			case 'EVENT_PAST':
 				if($this->conf['displayEventUntilEnd']) {
-					$selectConf['where'] .= ' AND (tt_news.tx_mblnewsevent_to + tt_news.tx_mblnewsevent_totime) < ' . $execTime;
+					$selectConf['where'] .= ' AND (((tt_news.tx_mblnewsevent_to + tt_news.tx_mblnewsevent_totime) > ' . $execTime .' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) < ' . $execTime .') OR (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) < ' . $execTime . ') ';
 				} else {
 					$selectConf['where'] .= ' AND (tt_news.tx_mblnewsevent_from + tt_news.tx_mblnewsevent_fromtime) < ' . $execTime;
 				}
