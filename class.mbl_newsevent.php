@@ -414,20 +414,20 @@ class tx_mblnewsevent extends tslib_pibase {
 		switch($tt_news->theCode) {
 			case 'EVENT_FUTURE':
 				//Pretend that this is just a normal list
-				$tt_news->theCode = 'LIST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LIST';
 				//Run list function
 				$content = $tt_news->displayList();
 				break;
 			case 'EVENT_PAST':
-				$tt_news->theCode = 'LIST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LIST';
 				$content = $tt_news->displayList();
 				break;
 			case 'LATEST_EVENT_FUTURE':
-				$tt_news->theCode = 'LATEST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LATEST';
 				$content = $tt_news->displayList();
 				break;
 			case 'LATEST_EVENT_PAST':
-				$tt_news->theCode = 'LATEST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LATEST';
 				$content = $tt_news->displayList();
 				break;
 			case 'ICS':
@@ -437,19 +437,19 @@ class tx_mblnewsevent extends tslib_pibase {
 				$content = $this->icsHandler($tt_news);
 				break;
 			case 'EVENT_CURRENT':
-				$tt_news->theCode = 'LIST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LIST';
 				$content = $tt_news->displayList();
 				break;
 			case 'LATEST_EVENT_CURRENT':
-				$tt_news->theCode = 'LATEST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LATEST';
 				$content = $tt_news->displayList();
 				break;
 			case 'EVENT_REGISTERABLE':
-				$tt_news->theCode = 'LIST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LIST';
 				$content = $tt_news->displayList();
 				break;
 			case 'LATEST_EVENT_REGISTERABLE':
-				$tt_news->theCode = 'LATEST';
+				$tt_news->theCode = $tt_news->config['code'] = 'LATEST';
 				$content = $tt_news->displayList();
 				break;
 		}
@@ -545,17 +545,25 @@ class tx_mblnewsevent extends tslib_pibase {
 		while($row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res /*MySQL result pointer (of SELECT query) / DBAL object*/)) {
 			$markerArray = array();
 			$markerArray['###SEQUENCE###'] = $seq;
-			$markerArray['###START_DATE###'] = gmdate('Ymd\THis\Z', $row['tx_mblnewsevent_from']+$row['tx_mblnewsevent_fromtime']);
-			$markerArray['###END_DATE###'] = gmdate('Ymd\THis\Z', $row['tx_mblnewsevent_to']+$row['tx_mblnewsevent_totime']);
+			//Event is full-day (or at least we can presume it is)
+			if($row['tx_mblnewsevent_fromtime'] == 0 && $row['tx_mblnewsevent_totime'] == 0) {
+				$markerArray['###START_DATE###'] = 'DTSTART;VALUE=DATE:'.date('Ymd', $row['tx_mblnewsevent_from']);
+				$markerArray['###END_DATE###'] = 'DTEND;VALUE=DATE:'.date('Ymd', $row['tx_mblnewsevent_to']+86400);
+			} else {
+				$markerArray['###START_DATE###'] = 'DTSTART:'.gmdate('Ymd\THis\Z', $row['tx_mblnewsevent_from']+$row['tx_mblnewsevent_fromtime']);
+				$markerArray['###END_DATE###'] = 'DTEND:'.gmdate('Ymd\THis\Z', $row['tx_mblnewsevent_to']+$row['tx_mblnewsevent_totime']);
+			}
 			$markerArray['###CREATED_DATE###'] = gmdate('Ymd\THis\Z', $row['tstamp']);
 			$markerArray['###TITLE###'] = $this->icsEscape($row['title']);
 			$markerArray['###LOCATION###'] = $this->icsEscape($row['tx_mblnewsevent_where']);
 			$markerArray['###BLURB###'] = $this->icsEscape($row['short']);
 			$markerArray['###UID###'] = 'tt_news' . $row['uid'] . "@" . $_SERVER['HTTP_HOST'];
-			if ($row['type']) { // News type article or external url
-				$tt_news->local_cObj->setCurrentVal($row['type'] == 1 ? $row['page'] : $row['ext_url']);
-				$markerArray['###EVENT_URL###'] = $this->icsEscape($this->cObj->typolinkWrap($tt_news->conf['pageTypoLink.']));
-			} else {
+			
+			if ($row['type'] == 1 || $row['type'] == 2) { // News type article or external url
+				$typolinkConf = $tt_news->conf['pageTypoLink.'];
+				$typolinkConf['parameter'] = ($row['type'] == 1 ? $row['page'] : $row['ext_url']);
+				$markerArray['###EVENT_URL###'] = $this->icsEscape($this->cObj->typolinkWrap($typolinkConf));
+			} elseif($row['type'] == 0) {
 				$markerArray['###EVENT_URL###'] = $this->icsEscape(
 				  t3lib_div::getIndpEnv('TYPO3_SITE_URL') . 
 				  $tt_news->pi_getPageLink(
@@ -570,6 +578,8 @@ class tx_mblnewsevent extends tslib_pibase {
 				    $tt_news->config['singlePid']
 				  )
 				);
+			} else {
+				$markerArray['###EVENT_URL###'] = '';
 			}
 			
 			if($row['tx_mblnewsevent_organizer']) {
