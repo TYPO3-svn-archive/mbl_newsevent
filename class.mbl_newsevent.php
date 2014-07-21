@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *  
-*  (c) 2004 Mathias Bolt Lesniak <mathias@lilio.com>
+*  (c) 2014 Mathias Bolt Lesniak <mathias@lilio.com>
 *  All rights reserved
 *
 *  This script is part of the TYPO3 project. The TYPO3 project is 
@@ -29,10 +29,10 @@
  *
  * @author	Mathias Bolt Lesniak <mathias@lilio.com>
  */
-require_once(PATH_tslib."class.tslib_pibase.php");
 
+if (!class_exists('tslib_pibase')) require_once(PATH_tslib . 'class.tslib_pibase.php');
 
-class tx_mblnewsevent extends tslib_pibase {
+class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	var $prefixId = "tx_mblnewsevent";		// Same as class name
 	var $scriptRelPath = "class.mblnewsevent.php";	// Path to this script relative to the extension dir.
 	var $extKey = "mbl_newsevent";	// The extension key.
@@ -68,7 +68,7 @@ class tx_mblnewsevent extends tslib_pibase {
 		$selectConf['selectFields'] = 'max(tt_news.tx_mblnewsevent_from) as maxval, min(tt_news.tx_mblnewsevent_from) as minval';
 		//echo $tt_news->getQuery('tt_news', $selectConf);
 		$res = $tt_news->exec_getQuery('tt_news', $selectConf);
-		
+
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
 		//var_dump($tt_news);
 		if ($row['minval'] || $row['maxval']) {
@@ -142,8 +142,8 @@ class tx_mblnewsevent extends tslib_pibase {
 			  '###ITEM###' //Marker string, eg. "###CONTENT_PART###"
 			);
 			$cc = 0;
-
-			$veryLocal_cObj = t3lib_div::makeInstance('tslib_cObj');
+			
+			$veryLocal_cObj = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance('tslib_cObj');
 			// reverse amenu order if 'reverseAMenu' is given
 			if ($tt_news->conf['reverseAMenu']) {
 				arsort($periodAccum);
@@ -565,7 +565,7 @@ class tx_mblnewsevent extends tslib_pibase {
 				$markerArray['###EVENT_URL###'] = $this->icsEscape($this->cObj->typolinkWrap($typolinkConf));
 			} elseif($row['type'] == 0) {
 				$markerArray['###EVENT_URL###'] = $this->icsEscape(
-				  t3lib_div::getIndpEnv('TYPO3_SITE_URL') . 
+				  \TYPO3\CMS\Core\Utility\GeneralUtility::getIndpEnv('TYPO3_SITE_URL') . 
 				  $tt_news->pi_getPageLink(
 				    $tt_news->config['singlePid'],
 				    '', 

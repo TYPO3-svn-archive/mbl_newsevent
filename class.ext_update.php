@@ -2,7 +2,7 @@
 /***************************************************************
 *  Copyright notice
 *
-*  (c) 2009 Mathias Bolt Lesniak, 
+*  (c) 2014 Mathias Bolt Lesniak,
 *  All rights reserved
 *
 *  This script is part of the Typo3 project. The Typo3 project is
@@ -25,8 +25,8 @@
 
 class ext_update {
 	public function main() {
-		if (!t3lib_div::_GP('do_update')) {
-			$onClick = "document.location='".t3lib_div::linkThisScript(array('do_update' => 1))."'; return false;";
+		if (!\TYPO3\CMS\Core\Utility\GeneralUtility::_GP('do_update')) {
+			$onClick = "document.location='".\TYPO3\CMS\Core\Utility\GeneralUtility::linkThisScript(array('do_update' => 1))."'; return false;";
 			if ($this->hasDateAndTimeCombined()) {
 				$content = '<b>'.$this->hasDateAndTimeCombined().' news articles have date and time combined in one field, and should be updated.</b><br /><br />';
 				$performActions = TRUE;
