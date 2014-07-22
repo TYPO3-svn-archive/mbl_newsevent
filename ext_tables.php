@@ -115,6 +115,7 @@ $tempColumns = Array (
 		)
 	),
 	'tx_mblnewsevent_regurl' => Array (
+		"exclude" => 1,
 		'l10n_mode' => 'mergeIfNotBlank',
 		'label' => 'LLL:EXT:mbl_newsevent/locallang_db.php:tt_news.tx_mblnewsevent_regurl',
 		'config' => Array (
