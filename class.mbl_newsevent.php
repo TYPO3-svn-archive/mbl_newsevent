@@ -38,7 +38,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	var $extKey = "mbl_newsevent";	// The extension key.
 	
 	
-	function extraGlobalMarkerProcessor($tt_news, $markerArray) {
+	function extraGlobalMarkerProcessor(tx_ttnews $tt_news, array $markerArray) {
 		
 		$this->conf = &$tt_news->conf['mbl_newsevent.'];
 		
@@ -56,7 +56,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		return $markerArray;
 	}
 	
-	function _dateSelectorMenu($tt_news) {
+	function _dateSelectorMenu(tx_ttnews $tt_news) {
 		$this->pi_loadLL();
 		$this->cObj = $tt_news->cObj;
 		
@@ -286,7 +286,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 	
 	
-	function _convertDates($tt_news) {
+	function _convertDates(tx_ttnews $tt_news) {
 		if (!$tt_news->piVars['event_year'] && $tt_news->piVars['event_pS']) {
 			$tt_news->piVars['event_year'] = date('Y',$tt_news->piVars['event_pS']);
 		}
@@ -316,7 +316,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 	
 	
-	function processSelectConfHook($tt_news, $selectConf) {
+	function processSelectConfHook(tx_ttnews $tt_news, array $selectConf) {
 		$this->conf = &$tt_news->conf['mbl_newsevent.'];
 		
 		if ($tt_news->conf['useHRDates']) {
@@ -404,7 +404,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 	
 	
-	function extraCodesProcessor($tt_news) {
+	function extraCodesProcessor(tx_ttnews $tt_news) {
 		
 		$this->conf = &$tt_news->conf['mbl_newsevent.'];
 		
@@ -461,7 +461,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 	
 	
-	function icsHandler($tt_news) {
+	function icsHandler(tx_ttnews $tt_news) {
 		$this->cObj = &$tt_news->cObj;
 		
 		if($tt_news->conf['defaultCode'] == 'SINGLE_ICS') {
@@ -623,7 +623,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 	}
 	
 	
-	function _getOrganizerArray($row) {
+	function _getOrganizerArray(array $row) {
 		$table = substr(
 		  $row['tx_mblnewsevent_organizer'],
 		  0,
@@ -689,7 +689,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		return (int) $automaticAdjustDate+$this->conf['adjustDate'];
 	}
 	
-	function extraItemMarkerProcessor($parentMarkerArray, $row, $lConf, $tt_news) {
+	function extraItemMarkerProcessor(array $parentMarkerArray, array $row, array $lConf, tx_ttnews $tt_news) {
 		$this->cObj = $tt_news->local_cObj;
 		//$this->cObj->start($row, 'tt_news');
 		
@@ -700,7 +700,53 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			
 			$this->pi_setPiVarDefaults();
 			$this->pi_loadLL();
-			
+
+			$templateFile = $this->cObj->fileResource($this->conf['templateFile']);
+
+			//Find out which template to use, depending on time and span of event
+			//If event has only a start date
+			if(!$row['tx_mblnewsevent_to'] && !$row['tx_mblnewsevent_totime'] && !$row['tx_mblnewsevent_fromtime']) {
+				$mainTemplate = $this->cObj->getSubpart(
+					$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+					'###ONE_DAY_EVENT_NO_TIME###' //Marker string, eg. "###CONTENT_PART###"
+				);
+				//If event has only a start date and a start time
+			} elseif(!$row['tx_mblnewsevent_to'] && !$row['tx_mblnewsevent_totime']) {
+				$mainTemplate = $this->cObj->getSubpart(
+					$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+					'###NO_END_EVENT###' //Marker string, eg. "###CONTENT_PART###"
+				);
+				//If the event goes within one day
+			} elseif(date('dmy', $row['tx_mblnewsevent_from']) == date('dmy', $row['tx_mblnewsevent_to'])) {
+				//If there is no time set
+				if($row['tx_mblnewsevent_fromtime'] == 0 && $row['tx_mblnewsevent_totime'] == 0) {
+					$mainTemplate = $this->cObj->getSubpart(
+						$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+						'###ONE_DAY_EVENT_NO_TIME###' //Marker string, eg. "###CONTENT_PART###"
+					);
+				} else {
+					$mainTemplate = $this->cObj->getSubpart(
+						$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+						'###ONE_DAY_EVENT###' //Marker string, eg. "###CONTENT_PART###"
+					);
+				}
+				//If the event spans multiple days
+			} else {
+				//If there is no time set
+				if($row['tx_mblnewsevent_fromtime'] == 0 && $row['tx_mblnewsevent_totime'] == 0) {
+					$mainTemplate = $this->cObj->getSubpart(
+						$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+						'###MULTIPLE_DAY_EVENT_NO_TIME###' //Marker string, eg. "###CONTENT_PART###"
+					);
+				} else {
+					$mainTemplate = $this->cObj->getSubpart(
+						$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+						'###MULTIPLE_DAY_EVENT###' //Marker string, eg. "###CONTENT_PART###"
+					);
+				}
+			}
+
+
 			$markerArray = array();
 			$markerArray['###EVENT_FROM_DATE###'] = $this->cObj->stdWrap(
 			  $row['tx_mblnewsevent_from']+$this->getAdjustDate(), //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
@@ -723,11 +769,35 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			  $this->conf['time_stdWrap.'] //TypoScript "stdWrap properties".
 			);
 			$markerArray['###EVENT_END_TIME###'] = $markerArray['###EVENT_TO_TIME###'];
-			
-			$markerArray['###EVENT_WHERE###'] = $this->cObj->stdWrap(
-			  $row['tx_mblnewsevent_where'], //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
-			  $this->conf['where_stdWrap.'] //TypoScript "stdWrap properties".
-			);
+
+			if($row['tx_mblnewsevent_where'] != '') {
+				$locationMarkerArray = array();
+
+				$locationMarkerArray['###EVENT_LOCATION###'] = $markerArray['###EVENT_WHERE###'] = $this->cObj->stdWrap(
+					$row['tx_mblnewsevent_where'], //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
+					$this->conf['where_stdWrap.'] //TypoScript "stdWrap properties".
+				);
+				$locationMarkerArray['###EVENT_LOCATION_TEXT###'] = $locationMarkerArray['###EVENT_WHERE_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('location')),
+					$this->conf['whereLabel_stdWrap.']
+				);
+
+				array_merge($markerArray, $locationMarkerArray);
+
+				$locationTemplate = $this->cObj->getSubpart(
+					$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+					'###EVENT_LOCATION_WRAP###' //Marker string, eg. "###CONTENT_PART###"
+				);
+				$locationTemplate = $this->cObj->substituteMarkerArrayCached(
+					$locationTemplate, //The content stream, typically HTML template content.
+					$locationMarkerArray //Regular marker-array where the 'keys' are substituted in $content with their values
+				);
+				$markerArray['###EVENT_LOCATION_INFO###'] = $locationTemplate;
+			} else {
+				$markerArray['###EVENT_LOCATION###'] = $markerArray['###EVENT_WHERE###'] = '';
+				$markerArray['###EVENT_LOCATION_TEXT###'] = $markerArray['###EVENT_WHERE_TEXT###'] = '';
+				$markerArray['###EVENT_LOCATION_INFO###'] = '';
+			}
 			
 			//Determine the actual event registration start and end times. If the registration start date is not set, the tt_news datetime is used (so that the registration is open instantly).
 			if($this->conf['enableRegistration'] && $row['tx_mblnewsevent_hasregistration']) {
@@ -948,16 +1018,38 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			if($row['tx_mblnewsevent_organizer'] != '') {
 				//Split into table and user
 				$organizerArray = $this->_getOrganizerArray($row);
-				
-				$markerArray['###EVENT_ORGANIZER###'] =  $this->cObj->stdWrap(
+
+				$organizerMarkerArray = array();
+
+				$organizerMarkerArray['###EVENT_ORGANIZER###'] = $this->cObj->stdWrap(
 						$this->cObj->typoLink(
 								htmlspecialchars($organizerArray['name']),
 								array('parameter'=>$organizerArray['email'])
 						),
 						$this->conf['organizer_stdWrap.']
 				);
+				$organizerMarkerArray['###EVENT_ORGANIZER_TEXT###'] = $this->cObj->stdWrap(
+					htmlspecialchars($this->pi_getLL('organizer')),
+					$this->conf['organizerLabel_stdWrap.']
+				);
+
+				$markerArray = array_merge($markerArray, $organizerMarkerArray);
+
+				$organizerTemplate = $this->cObj->getSubpart(
+					$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+					'###EVENT_ORGANIZER_WRAP###' //Marker string, eg. "###CONTENT_PART###"
+				);
+				$organizerTemplate = $this->cObj->substituteMarkerArrayCached(
+					$organizerTemplate, //The content stream, typically HTML template content.
+					$organizerMarkerArray //Regular marker-array where the 'keys' are substituted in $content with their values
+				);
+				$markerArray['###EVENT_ORGANIZER_INFO###'] = $organizerTemplate;
+
+
 			} else {
 				$markerArray['###EVENT_ORGANIZER###'] = '';
+				$markerArray['###EVENT_ORGANIZER_TEXT###'] = '';
+				$markerArray['###EVENT_ORGANIZER_INFO###'] = '';
 			}
 			
 			$markerArray['###EVENT_DATE_TEXT###'] = $this->cObj->stdWrap(
@@ -972,19 +1064,14 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 					htmlspecialchars($this->pi_getLL('event_dates')),
 					$this->conf['datesLabel_stdWrap.']
 			);
-			$markerArray['###EVENT_WHERE_TEXT###'] = $this->cObj->stdWrap(
-					htmlspecialchars($this->pi_getLL('location')),
-					$this->conf['whereLabel_stdWrap.']
-			);
-			$markerArray['###EVENT_ORGANIZER_TEXT###'] = $this->cObj->stdWrap(
-					htmlspecialchars($this->pi_getLL('organizer')),
-					$this->conf['organizerLabel_stdWrap.']
-			);
-			
+
+
 			if($this->conf['enablePrice']) {
+				$priceMarkerArray = array();
+
 				//If the price is zero or less, it's free
 				if($row['tx_mblnewsevent_price'] > 0) {
-					$markerArray['###EVENT_PRICE###'] = $this->cObj->stdWrap(
+					$priceMarkerArray['###EVENT_PRICE###'] = $this->cObj->stdWrap(
 					  number_format(
 						$row['tx_mblnewsevent_price'],
 						$this->conf['priceDecimals']
@@ -992,23 +1079,36 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 					  $this->conf['price_stdWrap.'] //TypoScript "stdWrap properties".
 					);
 				} else {
-					$markerArray['###EVENT_PRICE###'] = $this->cObj->stdWrap(
+					$priceMarkerArray['###EVENT_PRICE###'] = $this->cObj->stdWrap(
 					  $this->pi_getLL('freePrice'), //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
 					  $this->conf['price_stdWrap.'] //TypoScript "stdWrap properties".
 					);
 				}
-				$markerArray['###EVENT_PRICE_LABEL###'] = htmlspecialchars($this->pi_getLL('price'));
-				
-				$markerArray['###EVENT_PRICE_NOTE###'] = $this->cObj->stdWrap(
+				$priceMarkerArray['###EVENT_PRICE_LABEL###'] = htmlspecialchars($this->pi_getLL('price'));
+
+				$priceMarkerArray['###EVENT_PRICE_NOTE###'] = $this->cObj->stdWrap(
 				  htmlspecialchars($row['tx_mblnewsevent_pricenote']), //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
 				  $this->conf['pricenote_stdWrap.'] //TypoScript "stdWrap properties".
 				);
-				$markerArray['###EVENT_PRICE_NOTE_LABEL###'] = htmlspecialchars($this->pi_getLL('priceNote'));
+				$priceMarkerArray['###EVENT_PRICE_NOTE_LABEL###'] = htmlspecialchars($this->pi_getLL('priceNote'));
+
+				$markerArray = array_merge($markerArray, $priceMarkerArray);
+
+				$priceTemplate = $this->cObj->getSubpart(
+					$templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
+					'###EVENT_PRICE_WRAP###' //Marker string, eg. "###CONTENT_PART###"
+				);
+				$priceTemplate = $this->cObj->substituteMarkerArrayCached(
+					$priceTemplate, //The content stream, typically HTML template content.
+					$priceMarkerArray //Regular marker-array where the 'keys' are substituted in $content with their values
+				);
+				$markerArray['###EVENT_PRICE_INFO###'] = $priceTemplate;
 			} else {
 				$markerArray['###EVENT_PRICE###'] = '';
 				$markerArray['###EVENT_PRICE_LABEL###'] = '';
 				$markerArray['###EVENT_PRICE_NOTE###'] = '';
 				$markerArray['###EVENT_PRICE_NOTE_LABEL###'] = '';
+				$markerArray['###EVENT_PRICE_INFO###'] = '';
 			}
 
 			//Single ICS link
@@ -1020,8 +1120,6 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			} else {
 				$markerArray['###EVENT_SINGLE_ICS_LINK###'] = '';
 			}
-			
-			$templateFile = $this->cObj->fileResource($this->conf['templateFile']);
 			
 			//Find the correct event registration subpart. This subpart can stand alone or as a part of ###EVENT_WRAP###
 			$regSubpartMarker = '';
@@ -1058,50 +1156,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 			} else {
 				$regTemplate = '';
 			}
-			
-			//Find out which template to use, depending on time and span of event
-			//If event has only a start date
-			if(!$row['tx_mblnewsevent_to'] && !$row['tx_mblnewsevent_totime'] && !$row['tx_mblnewsevent_fromtime']) {
-				$mainTemplate = $this->cObj->getSubpart(
-				  $templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
-				  '###ONE_DAY_EVENT_NO_TIME###' //Marker string, eg. "###CONTENT_PART###"
-				);
-			//If event has only a start date and a start time
-			} elseif(!$row['tx_mblnewsevent_to'] && !$row['tx_mblnewsevent_totime']) {
-				$mainTemplate = $this->cObj->getSubpart(
-				  $templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
-				  '###NO_END_EVENT###' //Marker string, eg. "###CONTENT_PART###"
-				);
-			//If the event goes within one day
-			} elseif(date('dmy', $row['tx_mblnewsevent_from']) == date('dmy', $row['tx_mblnewsevent_to'])) {
-				//If there is no time set
-				if($row['tx_mblnewsevent_fromtime'] == 0 && $row['tx_mblnewsevent_totime'] == 0) {
-					$mainTemplate = $this->cObj->getSubpart(
-					  $templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
-					  '###ONE_DAY_EVENT_NO_TIME###' //Marker string, eg. "###CONTENT_PART###"
-					);
-				} else {
-					$mainTemplate = $this->cObj->getSubpart(
-					  $templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
-					  '###ONE_DAY_EVENT###' //Marker string, eg. "###CONTENT_PART###"
-					);
-				}
-			//If the event spans multiple days
-			} else {
-				//If there is no time set
-				if($row['tx_mblnewsevent_fromtime'] == 0 && $row['tx_mblnewsevent_totime'] == 0) {
-					$mainTemplate = $this->cObj->getSubpart(
-					  $templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
-					  '###MULTIPLE_DAY_EVENT_NO_TIME###' //Marker string, eg. "###CONTENT_PART###"
-					);
-				} else {
-					$mainTemplate = $this->cObj->getSubpart(
-					  $templateFile, //Content with subpart wrapped in fx. "###CONTENT_PART###" inside.
-					  '###MULTIPLE_DAY_EVENT###' //Marker string, eg. "###CONTENT_PART###"
-					);
-				}
-			}
-			
+
 			$parentMarkerArray = array_merge($parentMarkerArray, $markerArray);
 			
 			//Inserting registration wrap in both event wrap and global.
