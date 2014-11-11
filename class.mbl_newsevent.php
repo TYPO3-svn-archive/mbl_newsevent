@@ -60,16 +60,21 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 		$this->pi_loadLL();
 		$this->cObj = $tt_news->cObj;
 		
-		$tt_news->arcExclusive = 1;
+		//$tt_news->arcExclusive = 1;
+		$excludeAlreadyDisplayedNews = $tt_news->conf['excludeAlreadyDisplayedNews'];
+		$tt_news->conf['excludeAlreadyDisplayedNews'] = 0;
 		$selectConf = $tt_news->getSelectConf('', 1);
+		$tt_news->conf['excludeAlreadyDisplayedNews'] = $excludeAlreadyDisplayedNews;
+		$selectConf['where'] .= $tt_news->enableFields;
 		// Finding maximum and minimum values:
 		//$selectConf['where'] = '1=1';
 		//$selectConf = $this->processSelectConfHook($tt_news, $selectConf);
 		$selectConf['selectFields'] = 'max(tt_news.tx_mblnewsevent_from) as maxval, min(tt_news.tx_mblnewsevent_from) as minval';
 		//echo $tt_news->getQuery('tt_news', $selectConf);
 		$res = $tt_news->exec_getQuery('tt_news', $selectConf);
-
+		//var_dump($selectConf);
 		$row = $GLOBALS['TYPO3_DB']->sql_fetch_assoc($res);
+		//var_dump($row);
 		//var_dump($tt_news);
 		if ($row['minval'] || $row['maxval']) {
 			// if ($row['minval']) {
