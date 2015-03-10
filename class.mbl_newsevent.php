@@ -782,7 +782,7 @@ class tx_mblnewsevent extends \TYPO3\CMS\Frontend\Plugin\AbstractPlugin {
 					$row['tx_mblnewsevent_where'], //Input value undergoing processing in this function. Possibly substituted by other values fetched from another source.
 					$this->conf['where_stdWrap.'] //TypoScript "stdWrap properties".
 				);
-				$locationMarkerArray['###EVENT_LOCATION_TEXT###'] = $locationMarkerArray['###EVENT_WHERE_TEXT###'] = $this->cObj->stdWrap(
+				$locationMarkerArray['###EVENT_LOCATION_TEXT###'] = $markerArray['###EVENT_WHERE_TEXT###'] = $this->cObj->stdWrap(
 					htmlspecialchars($this->pi_getLL('location')),
 					$this->conf['whereLabel_stdWrap.']
 				);
